@@ -14,8 +14,15 @@ const App = () => {
       const response = await fetch(`http://api.github.com/users/${username}`);
       const result = await response.json();
       if (response.ok) {
-        const reposResponse = await fetch(result.repos_url);
-        const repos = await reposResponse.json();
+        let page = 1;
+        let repos = [];
+        while (true) {
+          const reposResponse = await fetch(`${result.repos_url}?page=${page}&per_page=100`);
+          const newRepos = await reposResponse.json();
+          if (newRepos.length === 0) break;
+          repos = repos.concat(newRepos);
+          page++;
+        }
         const totalRepos = repos.length;
         const totalForks = repos.reduce((acc, repo) => acc + repo.forks, 0);
         let languages = repos.reduce((acc, repo) => {
@@ -24,7 +31,6 @@ const App = () => {
           }
           return acc;
         }, {});
-        // Convert to array, sort, and convert back to object
         languages = Object.fromEntries(
           Object.entries(languages).sort(([,a],[,b]) => b - a)
         );
