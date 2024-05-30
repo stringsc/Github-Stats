@@ -33,11 +33,11 @@ This project consists of a frontend React application for the user interface and
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/github-user-stats.git
+   https://github.com/stringsc/Github-Stats.git
 
 2. Navigate to the program directory:
    ```bash
-   cd github-user-stats
+   cd github-stats
 
 3. Install dependencies for both the frontend and backend:
    ```bash
