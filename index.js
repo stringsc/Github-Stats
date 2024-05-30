@@ -1,6 +1,6 @@
 const express = require('express');
-const axios = require('axios');
 const cors = require('cors');
+const fetch = require('node-fetch');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,26 +8,43 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/user/:username', async (req, res) => {
+app.get('/api/user-stats/:username', async (req, res) => {
   const { username } = req.params;
-  const baseUrl = `https://api.github.com/users/${username}/repos`;
+  const userUrl = `https://api.github.com/users/${username}`;
+  const reposUrl = `https://api.github.com/users/${username}/repos`;
 
   try {
+    // Fetch user information to ensure user exists
+    let userResponse = await fetch(userUrl, { headers: { 'User-Agent': 'request' } });
+    if (!userResponse.ok) {
+      const errorData = await userResponse.text();
+      throw new Error(`GitHub API error: ${userResponse.status} ${userResponse.statusText} - ${errorData}`);
+    }
+    const userInfo = await userResponse.json();
+
+    // Fetch repositories information
     let page = 1;
     let repos = [];
     let response;
+    let data;
 
     do {
-      response = await axios.get(`${baseUrl}?per_page=100&page=${page}`);
-      repos = repos.concat(response.data);
+      response = await fetch(`${reposUrl}?per_page=100&page=${page}`, {
+        headers: { 'User-Agent': 'request' }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`GitHub API error: ${response.status} ${response.statusText} - ${errorData}`);
+      }
+
+      data = await response.json();
+      repos = repos.concat(data);
       page++;
-    } while (response.data.length === 100);
+    } while (data.length === 100);
 
     const totalRepos = repos.length;
     const totalForks = repos.reduce((acc, repo) => acc + repo.forks_count, 0);
-    const totalStargazers = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
-    const totalSize = repos.reduce((acc, repo) => acc + repo.size, 0);
-    const avgSize = totalSize / totalRepos;
     const languageCounts = repos.reduce((acc, repo) => {
       if (repo.language) {
         acc[repo.language] = (acc[repo.language] || 0) + 1;
@@ -40,14 +57,11 @@ app.get('/api/user/:username', async (req, res) => {
       .map(([language, count]) => ({ language, count }));
 
     const result = {
+      username: userInfo.login,
       totalRepos,
       totalForks,
-      totalStargazers,
-      avgSize,
       languages: sortedLanguages,
     };
-
-    console.log(result); // Log the response
 
     res.json(result);
   } catch (error) {
