@@ -46,6 +46,10 @@ const App = () => {
     }
   };
 
+  const handleLanguageClick = (language) => {
+    alert(`You clicked on ${language}`);
+  };
+
   return (
     <div className="App">
       <h1>GitHub User Stats</h1>
@@ -59,7 +63,7 @@ const App = () => {
         />
         <button type="submit">Get Stats</button>
       </form>
-      {loading && <p>Loading...</p>}
+      {loading && <p className="loading">Loading...</p>}
       {error && <p className="error">{error}</p>}
       {data && (
         <div className="stats">
@@ -67,10 +71,10 @@ const App = () => {
           <p>Total Repositories: {data.totalRepos}</p>
           <p>Total Forks: {data.totalForks}</p>
           <h3>Languages Used:</h3>
-          <ul>
-          {data && data.languages && Object.entries(data.languages).map(([language, count], index) => (
-  <li key={index}>{language}: {count}</li>
-))}
+          <ul className="languages-list">
+            {data && data.languages && Object.entries(data.languages).map(([language, count]) => (
+              <li key={language} onClick={() => handleLanguageClick(language)}>{language}: {count}</li>
+            ))}
           </ul>
         </div>
       )}

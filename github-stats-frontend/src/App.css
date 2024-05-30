@@ -1,37 +1,100 @@
+@keyframes moveBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .App {
+  font-family: Arial, sans-serif;
   text-align: center;
-  padding: 20px;
+  padding: 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 400% 400%;
+  animation: moveBackground 15s ease infinite;
+  color: #fff;
+}
+
+h1 {
+  margin-bottom: 2rem;
 }
 
 form {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-input {
-  padding: 10px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
+input[type="text"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #fff;
   border-radius: 4px;
+  margin-right: 1rem;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #007bff;
   border: none;
   border-radius: 4px;
-  background-color: #28a745;
-  color: white;
   cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
 }
 
 button:hover {
-  background-color: #218838;
+  background-color: #f0f0f0;
 }
 
-.stats {
-  text-align: left;
-  margin-top: 20px;
+.loading {
+  margin-top: 2rem;
 }
 
 .error {
   color: red;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.stats {
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.stats p {
+  margin-bottom: 1rem;
+}
+
+.languages-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.languages-list li {
+  margin-right: 1rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.languages-list li:last-child {
+  margin-right: 0;
+}
+
+.languages-list li:hover {
+  color: #fff;
+  cursor: pointer;
 }
