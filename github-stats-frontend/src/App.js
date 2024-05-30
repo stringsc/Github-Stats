@@ -11,18 +11,26 @@ const App = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`http://api.github.com/search/${username}`);
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const result = await response.json();
-        if (response.ok) {
-          setData(result);
-        } else {
-          setError(result.error || 'Failed to fetch data');
-        }
+      const response = await fetch(`http://api.github.com/users/${username}`);
+      const result = await response.json();
+      if (response.ok) {
+        const reposResponse = await fetch(result.repos_url);
+        const repos = await reposResponse.json();
+        const totalRepos = repos.length;
+        const totalForks = repos.reduce((acc, repo) => acc + repo.forks, 0);
+        let languages = repos.reduce((acc, repo) => {
+          if (repo.language) {
+            acc[repo.language] = (acc[repo.language] || 0) + 1;
+          }
+          return acc;
+        }, {});
+        // Convert to array, sort, and convert back to object
+        languages = Object.fromEntries(
+          Object.entries(languages).sort(([,a],[,b]) => b - a)
+        );
+        setData({ totalRepos, totalForks, languages });
       } else {
-        const errorText = await response.text();
-        setError(`Invalid response format: ${errorText}`);
+        setError(result.message || 'Failed to fetch data');
       }
     } catch (error) {
       console.error(`Error fetching data for user: ${username}`, error);
@@ -60,11 +68,9 @@ const App = () => {
           <p>Total Forks: {data.totalForks}</p>
           <h3>Languages Used:</h3>
           <ul>
-            {data.languages.map((lang, index) => (
-              <li key={index}>
-                {lang.language}: {lang.count}
-              </li>
-            ))}
+          {data && data.languages && Object.entries(data.languages).map(([language, count], index) => (
+  <li key={index}>{language}: {count}</li>
+))}
           </ul>
         </div>
       )}

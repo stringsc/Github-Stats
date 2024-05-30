@@ -10,8 +10,8 @@ app.use(express.json());
 
 app.get('/api/user-stats/:username', async (req, res) => {
   const { username } = req.params;
-  const userUrl = `https://api.github.com/users/${username}`;
-  const reposUrl = `https://api.github.com/users/${username}/repos`;
+  const userUrl = `https://api.github.com/search/users?q=${username}`;
+  const reposUrl = `https://api.github.com/search/users?q=${username}/repos`;
 
   try {
     // Fetch user information to ensure user exists
