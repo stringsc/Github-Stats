@@ -4,7 +4,7 @@ A web application built with React and Express.js to fetch and display GitHub us
 
 ## Overview
 
-This project consists of a frontend React application for the user interface and a backend Express.js server to fetch data from the GitHub API. Users can enter a GitHub username, and the app will retrieve information such as the total number of repositories, total forks, and the languages used in those repositories.
+This project consists of a frontend React application for the user interface and a backend Express.js server to fetch data from the GitHub API. Users can enter a GitHub username, and the app will retrieve information such as the total number of repositories, total stars, total forks, and the languages used in those repositories.
 
 ## Tech Stack
 
